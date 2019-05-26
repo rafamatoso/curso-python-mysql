@@ -1,0 +1,116 @@
+# Criar tabela 'alunos' ####################################################################################################################
+
+CREATE TABLE alunos (
+	id_aluno int(11) NOT NULL AUTO_INCREMENT,
+	nome varchar(100) NOT NULL,
+	data_nascimento date NOT NULL,
+	endereco varchar(255) NOT NULL,
+	cidade varchar(100) NOT NULL,
+	estado varchar(2) NOT NULL,
+	cpf varchar(11) NOT NULL,
+	PRIMARY KEY (id_aluno)
+);
+
+
+# Deletar tabela 'alunos' ##################################################################################################################
+
+DROP TABLE alunos;
+
+
+# Inserir valores na tabela 'alunos' #######################################################################################################
+
+INSERT INTO alunos (coluna1, coluna2, coluna3...) # Caso todos os valores sejam preenchidos, não precisa especificar as colunas
+VALUES (DEFAULT, 'Rafael Matoso', '1988-10-14', 'Rua Julio Alves de Souza, 68', 'CABO', 'PE', '01373735465'),
+	(DEFAULT, 'Maria Martins', '1979-01-25', 'Av. Dr. Carneiro Leão, 17', 'CABO', 'PE', '41254632189'),
+	(DEFAULT, 'Silvia Souza', '1994-07-03', ' Rua Antônio Falcão, 741', 'RECIFE', 'PE', '14247120321');
+
+
+# Atualizar valor na tabela 'alunos' #######################################################################################################
+
+UPDATE alunos
+SET nome = 'Rafael Gustavo Matoso Gomes'
+Where id_aluno = 1; # ou pode ser feito nome = 'Rafael Matoso', mas não é uma boa prática. Boa prática é sempre procurar pelo id
+
+
+# Deletar valores na tabela 'alunos' #######################################################################################################
+
+DELETE FROM alunos
+WHERE id_aluno = 1
+
+
+# Retornar consulta com coluna(s) específica para mostrar de acordo com a cláusula WHERE ###################################################
+
+SELECT nome, cidade, data_nascimento, cpf
+FROM alunos
+WHERE estado = 'PE'
+
+
+# Retornar consulta em ordem alfabética ####################################################################################################
+
+SELECT nome, data_nascimento, cidade, cpf FROM alunos
+ORDER BY nome 
+# ORDER BY nome DESC # ordem descendente
+# ORDER BY 2 DESC # organiza apenas a segunda coluna da consulta específica (no exemplo, data_nascimento) 
+
+
+# Retornar consulta usando Operadores Lógicos e Relacionais ################################################################################
+
+SELECT *
+FROM alunos 
+WHERE id_aluno = 5 OR id_aluno = 2 # OR operador lógico
+
+SELECT *
+FROM alunos 
+WHERE cidade = 'RECIFE' AND id_aluno > 3 # AND operador lógico # > / < / >= / <= / <> operador relacional
+
+
+# Criação de tabelas com chaves estrangeiras - Relacionamentos #############################################################################
+
+# Primeiro se cria a tabela onde estarão as chaves estrangeiras
+
+CREATE TABLE alunos_cursos (
+    id_aluno_curso int(11) NOT NULL AUTO_INCREMENT,
+    id_aluno int(11) NOT NULL,
+    id_curso int(11) NOT NULL,
+    PRIMARY KEY (id_aluno_curso)
+);
+
+# Logo em seguida, definimos as alterações para que a tabela alunos_cursos contenha as chaves estrangeiras
+
+ALTER TABLE alunos_cursos
+ADD INDEX fk_id_aluno_idx (id_aluno ASC),
+ADD INDEX fk_id_curso_idx (id_curso ASC);
+;
+ALTER TABLE alunos_cursos
+ADD CONSTRAINT fk_id_aluno
+	FOREIGN KEY (id_aluno)
+    REFERENCES alunos (id_aluno)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+ADD CONSTRAINT fk_id_curso
+	FOREIGN KEY (id_curso)	
+    REFERENCES cursos (id_curso)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+# Também criaremos um relacionamento na tabela notas
+
+ALTER TABLE notas 
+add column id_aluno_curso int(11) not null after id_nota, 
+add index fk_id_aluno_curso_idx (id_aluno_curso asc);
+;
+ALTER TABLE notas 
+add constraint fk_id_aluno_curso 
+foreign key (id_aluno_curso) 
+references alunos_cursos (id_aluno_curso) 
+on DELETE no action 
+on update no action
+
+
+
+
+
+
+
+
+
